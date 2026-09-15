@@ -1,0 +1,92 @@
+:root {
+  /* ==========================================================================
+     PRAVAHA INDUSTRIAL DESIGN TOKENS
+     Calm, high-contrast, professional utility operations palette
+     ========================================================================== */
+
+  /* Background layers */
+  --bg-app: #0B0F19;
+  --bg-sidebar: #0F172A;
+  --bg-surface: #111C2E;
+  --bg-surface-raised: #162338;
+  --bg-input: #0D1626;
+  --bg-hover: #1B2A42;
+
+  /* Borders */
+  --border-subtle: #27364C;
+  --border-default: #334155;
+  --border-strong: #465A75;
+
+  /* Typography Colors */
+  --text-primary: #E6EDF7;
+  --text-secondary: #AAB8CC;
+  --text-muted: #74829A;
+  --text-disabled: #536176;
+
+  /* Accent & Status Colors */
+  --accent-primary: #22A7F0;
+  --accent-primary-hover: #56C3FF;
+  --accent-primary-muted: rgba(34, 167, 240, 0.14);
+
+  --status-success: #34D399;
+  --status-success-muted: rgba(52, 211, 153, 0.14);
+
+  --status-warning: #FBBF24;
+  --status-warning-muted: rgba(251, 191, 36, 0.14);
+
+  --status-danger: #FB7185;
+  --status-danger-muted: rgba(251, 113, 133, 0.14);
+
+  --status-critical: #E879F9;
+  --status-critical-muted: rgba(232, 121, 249, 0.14);
+
+  /* Geometry & Elevation */
+  --focus-ring: rgba(86, 195, 255, 0.65);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.18);
+  --sidebar-width: 264px;
+
+  /* Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Typography Scale */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 30px;
+  --metric-lg: clamp(30px, 3vw, 42px);
+
+  /* Legacy bridges for backwards compatibility */
+  --bg-primary: var(--bg-app);
+  --bg-secondary: var(--bg-surface);
+  --panel: var(--bg-surface);
+  --panel-solid: var(--bg-surface-raised);
+  --panel-hover: var(--bg-hover);
+  --border: var(--border-subtle);
+  --border-focus: var(--accent-primary);
+  --border-glow: var(--border-strong);
+  --cyan: var(--accent-primary);
+  --blue: #2563eb;
+  --violet: #818cf8;
+  --green: var(--status-success);
+  --amber: var(--status-warning);
+  --red: var(--status-danger);
+  --magenta: var(--status-critical);
+  --text-dim: var(--text-muted);
+  --shadow-panel: var(--shadow-card);
+  --radius-panel: var(--radius-lg);
+  --radius-card: var(--radius-lg);
+}
