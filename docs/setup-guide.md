@@ -1,43 +1,45 @@
 # Setup Guide
 
-> **This guide explains how to install and run PRAVAHA on a local computer.**
+> **This guide explains how to install, configure, and run PRAVAHA locally.**
 
 ## Prerequisites
 
-Before you begin, make sure the following are installed:
+Before you begin, make sure the following are installed or available:
 
-* **Python 3** — used to run the backend.
-* **Node.js and npm** — used to run the React frontend.
-* **Git** — used to download the project from GitHub.
-* **A Supabase project** — used by PRAVAHA to store application data.
+* **Python 3** — used to run the FastAPI backend and risk-analysis logic.
+* **Node.js and npm** — used to run the React + Vite frontend.
+* **Git** — used to clone the PRAVAHA repository.
+* **Supabase project** — used to store PRAVAHA data in PostgreSQL.
+* **IBM watsonx.ai access** — required for the IBM AI-powered risk prediction functionality used by PRAVAHA.
+* **IBM Bob** — used during the development of the PRAVAHA solution.
 
 ## Environment Variables
 
-PRAVAHA uses environment variables to connect to the database and other services.
+PRAVAHA uses environment variables to connect securely to the database and IBM services.
 
-First, create your local environment file:
+Create your local environment file:
 
 ```bash
 cp .env.example .env
 ```
 
-Then open the `.env` file and add the values required by your project.
+Then open `.env` and add the values for your environment.
 
-| Variable             | Description                                                | Required |
-| -------------------- | ---------------------------------------------------------- | -------- |
-| `DATABASE_URL`       | Connection string for the Supabase PostgreSQL database     | Yes      |
-| `SUPABASE_URL`       | URL of the Supabase project                                | Yes      |
-| `SUPABASE_ANON_KEY`  | Supabase key used by the application                       | Yes      |
-| `WATSONX_API_KEY`    | IBM watsonx.ai API key, when the integration is enabled    | No       |
-| `WATSONX_PROJECT_ID` | IBM watsonx.ai project ID, when the integration is enabled | No       |
+| Variable             | Description                                            | Required |
+| -------------------- | ------------------------------------------------------ | -------- |
+| `DATABASE_URL`       | Connection string for the Supabase PostgreSQL database | Yes      |
+| `SUPABASE_URL`       | URL of the Supabase project                            | Yes      |
+| `SUPABASE_ANON_KEY`  | Supabase API key used by the application               | Yes      |
+| `WATSONX_API_KEY`    | IBM watsonx.ai API key used for AI/ML operations       | Yes      |
+| `WATSONX_PROJECT_ID` | IBM watsonx.ai project ID                              | Yes      |
 
-> **Important:** Never upload `.env` to GitHub because it may contain private keys or passwords.
+> **Important:** Never upload `.env` to GitHub. It may contain private database credentials and IBM API keys.
 
 ## Installation
 
 ### 1. Clone the repository
 
-Download the PRAVAHA project from GitHub:
+Download the PRAVAHA project:
 
 ```bash
 git clone https://github.com/Aryashah1505/bob-ai-hackathon-VoltVision.git
@@ -46,7 +48,7 @@ cd bob-ai-hackathon-VoltVision
 
 ### 2. Install backend dependencies
 
-Move into the backend folder:
+Move to the backend:
 
 ```bash
 cd backend
@@ -58,13 +60,13 @@ Create a Python virtual environment:
 python3 -m venv .venv
 ```
 
-Activate the virtual environment:
+Activate the environment:
 
 ```bash
 source .venv/bin/activate
 ```
 
-Install the required Python packages:
+Install the backend packages:
 
 ```bash
 pip install -r requirements.txt
@@ -72,41 +74,61 @@ pip install -r requirements.txt
 
 ### 3. Install frontend dependencies
 
-Open a **new terminal** and move into the frontend folder:
+Open a second terminal and move to the frontend:
 
 ```bash
 cd frontend
 ```
 
-Install the required JavaScript packages:
+Install the required packages:
 
 ```bash
 npm install
 ```
 
-### 4. Set up the database
+### 4. Configure the database and IBM services
 
-PRAVAHA uses **Supabase PostgreSQL** as its database.
+Create the environment file:
 
-Make sure the Supabase project is configured and the required environment variables have been added to the `.env` file.
+```bash
+cp .env.example .env
+```
+
+Add:
+
+```text
+Supabase connection details
++
+IBM watsonx.ai API details
+```
+
+PRAVAHA uses Supabase PostgreSQL for application data and IBM watsonx.ai for the AI-powered risk prediction workflow.
 
 ## Running the Application
 
-PRAVAHA uses two parts:
+PRAVAHA has two main application layers:
 
 ```text
-Frontend
-   ↓
-Backend API
-   ↓
-Supabase Database
+User
+  ↓
+React + Vite Frontend
+  ↓
+FastAPI Backend
+  ↓
+Supabase PostgreSQL
+  +
+IBM watsonx.ai
+  ↓
+Risk Analysis
+  ↓
+PRAVAHA Dashboard
 ```
 
-Both the frontend and backend need to be running.
+Both frontend and backend services should be running.
 
 ### Start the backend
 
-From the `backend` folder:
+From the `backend` directory:
 
 ```bash
 source .venv/bin/activate
@@ -134,58 +156,65 @@ The frontend normally runs at:
 http://localhost:5173
 ```
 
-Open this address in your browser to use PRAVAHA.
+Open the frontend address in your browser.
 
 ## Running Tests
 
-Run the available project tests using:
+Run the available automated tests with:
 
 ```bash
 pytest
 ```
 
-For a basic application check, verify that:
+For a basic application check, verify the following flow:
 
 ```text
-PRAVAHA opens
+PRAVAHA Opens
       ↓
-Dashboard loads
+Dashboard Loads
       ↓
-Database data appears
+Database Data Appears
       ↓
-Assets are displayed
+Assets Are Displayed
       ↓
-Asset-wise risk is shown
+Asset Risk Is Calculated
       ↓
-Alerts are displayed
+IBM AI Risk Processing Works
       ↓
-Maintenance recommendations are displayed
+Alerts Are Displayed
+      ↓
+Maintenance Recommendations Appear
 ```
 
 ## Quick Demo (Optional)
 
-To quickly demonstrate PRAVAHA after starting the frontend and backend:
+After starting the frontend and backend:
 
 ```text
 1. Open http://localhost:5173
 2. Open the PRAVAHA dashboard
-3. Select or enter the company and region
+3. Enter or select the company and region
 4. View substations and transformers
-5. View sensor and weather information
-6. Check the risk score of each asset
-7. Check alerts and possible failures
-8. View maintenance recommendations
-9. View crew pre-positioning suggestions
+5. View sensor and weather data
+6. Run the risk analysis
+7. View the asset-specific risk score
+8. Check possible failures and alerts
+9. View maintenance recommendations
+10. Review crew pre-positioning suggestions
 ```
 
-The main idea of the demo is:
+The main PRAVAHA workflow is:
 
 ```text
 Asset Data
     ↓
-Risk Analysis
+Supabase Database
     ↓
-Risk Score
+FastAPI Backend
+    ↓
+IBM watsonx.ai / Risk Analysis
+    ↓
+Asset Risk Score
     ↓
 Alert
     ↓
@@ -194,14 +223,16 @@ Recommended Action
 
 ## Troubleshooting
 
-| Issue                                 | Solution                                                                                     |
-| ------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `ModuleNotFoundError`                 | Activate the `.venv` environment and run `pip install -r requirements.txt` again.            |
-| `npm` or package error                | Open the `frontend` folder and run `npm install` again.                                      |
-| Frontend does not open                | Make sure `npm run dev` is running and open the URL shown by Vite.                           |
-| Frontend cannot connect to backend    | Make sure the FastAPI backend is running at the expected address and port.                   |
-| Database shows no data                | Check the Supabase URL, database credentials, table data, and Row Level Security policies.   |
-| CORS error                            | Check the backend CORS configuration and make sure the frontend URL is allowed.              |
-| watsonx.ai `401` error                | Check `WATSONX_API_KEY` and `WATSONX_PROJECT_ID` if watsonx.ai integration is enabled.       |
-| Port already in use                   | Stop the application using that port or start the service on another port.                   |
-| Environment variables are not working | Check that `.env` exists in the expected location and restart the backend after changing it. |
+| Issue                                | Solution                                                                                                      |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `ModuleNotFoundError`                | Activate `.venv` and run `pip install -r requirements.txt` again.                                             |
+| `npm` or package error               | Run `npm install` inside the `frontend` directory again.                                                      |
+| Frontend does not open               | Make sure `npm run dev` is running and use the URL displayed by Vite.                                         |
+| Frontend cannot connect to backend   | Make sure FastAPI is running and the frontend is configured with the correct backend URL.                     |
+| Database shows no data               | Check `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, database tables, and Row Level Security policies.  |
+| CORS error                           | Check the FastAPI CORS configuration and make sure the frontend origin is allowed.                            |
+| IBM watsonx.ai `401` error           | Check `WATSONX_API_KEY` and `WATSONX_PROJECT_ID` in `.env`.                                                   |
+| IBM watsonx.ai connection error      | Verify that the IBM project is active and the configured API credentials have access to the required service. |
+| Risk prediction does not work        | Check the backend terminal for ML/API errors and verify the required IBM and database environment variables.  |
+| Port already in use                  | Stop the application using that port or run the service on another available port.                            |
+| Environment variables are not loaded | Confirm that `.env` is configured correctly and restart the backend after making changes.                     |
