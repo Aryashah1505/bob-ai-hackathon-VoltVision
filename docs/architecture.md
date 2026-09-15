@@ -2,48 +2,65 @@
 
 ## System Architecture
 
-[Describe the overall architecture of your system. Replace the Mermaid diagram below with your actual architecture.]
-
 ```mermaid
-graph TD
-    A[User / Browser] -->|HTTP| B[Frontend - React]
-    B -->|REST API| C[Backend - FastAPI]
-    C -->|SDK| D[watsonx.ai]
-    C -->|Query| E[PostgreSQL]
-    C -->|Publish| F[Slack Webhook]
-    D -->|Inference Result| C
+flowchart TD
+    A[User] --> B[PRAVAHA Website]
+
+    B --> C[Company & Grid Data]
+    B --> D[Sensor & Weather Data]
+    B --> E[Failure History]
+
+    C --> F[Supabase Database]
+    D --> F
+    E --> F
+
+    F --> G[FastAPI Backend]
+
+    G --> H[Risk Analysis]
+    H --> I[ML Model]
+    H --> J[Threshold Rules]
+
+    I --> K[Asset Risk Score]
+    J --> K
+
+    K --> L[Alerts]
+    K --> M[Maintenance Recommendations]
+    K --> N[Crew Pre-positioning]
+
+    L --> O[PRAVAHA Dashboard]
+    M --> O
+    N --> O
 ```
 
 ## Components
 
-| Component | Technology | Responsibility |
-|---|---|---|
-| Frontend | [e.g., React 18] | [e.g., Dashboard UI, user interaction] |
-| Backend API | [e.g., FastAPI] | [e.g., Business logic, orchestration] |
-| AI / ML | [e.g., watsonx.ai] | [e.g., Anomaly scoring, classification] |
-| Database | [e.g., PostgreSQL] | [e.g., Storing pipeline events and scores] |
-| Notifications | [e.g., Slack API] | [e.g., Alerting on threshold breaches] |
+| Component     | Technology           | Responsibility                                         |
+| ------------- | -------------------- | ------------------------------------------------------ |
+| Frontend      | React + Vite         | Website, data entry and dashboard                      |
+| Backend API   | FastAPI              | Process data and handle API requests                   |
+| AI / ML       | Python, scikit-learn | Predict and calculate asset risk                       |
+| Database      | Supabase PostgreSQL  | Store company, asset, sensor, weather and failure data |
+| Risk Analysis | ML + Threshold Rules | Calculate risk for each asset                          |
 
 ## Data Flow
 
-[Describe how data moves through your system from input to output.]
-
-1. [e.g., Pipeline logs are ingested via a webhook from GitHub Actions]
-2. [e.g., Logs are preprocessed and chunked into 512-token segments]
-3. [e.g., Each chunk is sent to the watsonx.ai inference endpoint]
-4. [e.g., Anomaly scores are stored in PostgreSQL]
-5. [e.g., The React dashboard polls the API every 30 seconds to refresh]
+1. User enters company, region, asset, sensor, weather and failure information.
+2. The data is stored in Supabase PostgreSQL.
+3. FastAPI retrieves the required asset data.
+4. PRAVAHA analyzes each asset separately.
+5. The ML model and/or threshold rules calculate the asset risk.
+6. The system generates a risk score and identifies possible failures.
+7. Alerts, maintenance recommendations and crew-planning suggestions are created.
+8. The results are displayed on the PRAVAHA dashboard.
 
 ## Security Considerations
 
-[Note any security decisions relevant to the architecture — even if basic.]
-
-- [e.g., API keys stored in environment variables, never committed to git]
-- [e.g., All API routes require a Bearer token]
-- [e.g., Database credentials rotated via IBM Secrets Manager]
+* Sensitive credentials are stored in environment variables.
+* `.env` files are excluded from GitHub.
+* `.env.example` contains only the required variable names.
+* Supabase Row Level Security is used where configured.
+* Sensitive database credentials are not exposed in the frontend.
 
 ## Scalability Notes
 
-[Optional: how would this scale beyond the hackathon prototype?]
-
-[e.g., "The FastAPI backend is stateless and could be horizontally scaled behind a load balancer. The watsonx.ai calls are the bottleneck and would benefit from request batching."]
+PRAVAHA can be scaled by adding real-time sensor data, more assets and multiple companies. The FastAPI backend can be scaled independently, while the database and risk engine can later support larger numbers of assets and continuous monitoring.
