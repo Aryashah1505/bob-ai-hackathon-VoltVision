@@ -129,7 +129,7 @@ export function ForgotPasswordPage({ onNavigate }) {
                 <input
                   type="email"
                   className="input-field"
-                  placeholder="operator@utilitygrid.com"
+                  placeholder="Enter your email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
