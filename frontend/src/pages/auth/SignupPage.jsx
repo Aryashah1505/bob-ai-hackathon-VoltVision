@@ -1,36 +1,61 @@
 import React, { useState } from "react";
-import { User, Mail, Lock, Building2, MapPin, ArrowRight, AlertCircle, CheckCircle2, Shield } from "lucide-react";
+import { User, Mail, Lock, Building2, MapPin, Globe, Compass, ArrowRight, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 export function SignupPage({ onNavigate, onSignupSuccess }) {
   const { signup } = useAuth();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [location, setLocation] = useState("");
+  const [region, setRegion] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  const [region, setRegion] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [authorizedConsent, setAuthorizedConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!fullName.trim() || !email.trim() || !password || !companyName.trim() || !region.trim()) {
+
+    // 1. Required fields validation
+    if (
+      !fullName.trim() ||
+      !email.trim() ||
+      !companyName.trim() ||
+      !industry.trim() ||
+      !location.trim() ||
+      !region.trim() ||
+      !password ||
+      !confirmPassword
+    ) {
       setError("Please complete all required fields.");
       return;
     }
 
+    // 2. Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    // 3. Password length validation
     if (password.length < 8) {
       setError("Password must be at least 8 characters long.");
       return;
     }
 
+    // 4. Password confirmation match
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+      setError("Password and confirm password do not match.");
       return;
     }
 
+    // 5. Consent validation
     if (!authorizedConsent) {
       setError("Please confirm you are authorized to create this utility workspace.");
       return;
@@ -43,9 +68,11 @@ export function SignupPage({ onNavigate, onSignupSuccess }) {
       const res = await signup({
         fullName: fullName.trim(),
         email: email.trim(),
-        password,
         companyName: companyName.trim(),
+        industry: industry.trim(),
+        location: location.trim(),
         region: region.trim(),
+        password,
       });
 
       if (onSignupSuccess) {
@@ -56,8 +83,12 @@ export function SignupPage({ onNavigate, onSignupSuccess }) {
     } catch (err) {
       console.error("Signup error:", err);
       let msg = err.message || "Failed to create account. Please try again.";
-      if (msg.toLowerCase().includes("user already registered")) {
-        msg = "An account with this email already exists. Please sign in instead.";
+      if (
+        msg.toLowerCase().includes("user already registered") ||
+        msg.toLowerCase().includes("already exists") ||
+        msg.toLowerCase().includes("duplicate key")
+      ) {
+        msg = "This email is already registered. Please sign in instead.";
       }
       setError(msg);
     } finally {
@@ -76,7 +107,7 @@ export function SignupPage({ onNavigate, onSignupSuccess }) {
       padding: "2.5rem 1rem",
     }}>
       <div className="glass-panel" style={{
-        maxWidth: "520px",
+        maxWidth: "560px",
         width: "100%",
         padding: "2.5rem 2.25rem",
         borderRadius: "var(--radius-lg)",
@@ -137,7 +168,7 @@ export function SignupPage({ onNavigate, onSignupSuccess }) {
                 <input
                   type="text"
                   className="input-field"
-                  placeholder="e.g. Vikram Sharma"
+                  placeholder="Enter your full name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
@@ -155,7 +186,7 @@ export function SignupPage({ onNavigate, onSignupSuccess }) {
                 <input
                   type="email"
                   className="input-field"
-                  placeholder="operator@utility.com"
+                  placeholder="Enter your work email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -166,17 +197,17 @@ export function SignupPage({ onNavigate, onSignupSuccess }) {
             </div>
           </div>
 
-          {/* Company Name & Operating Region */}
+          {/* Company Name & Industry Sector */}
           <div className="form-grid-2">
             <div className="form-group">
               <label className="form-label" style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
-                Company / Utility Name *
+                Company Name *
               </label>
               <div style={{ position: "relative" }}>
                 <input
                   type="text"
                   className="input-field"
-                  placeholder="e.g. Gujarat State Grid Corp"
+                  placeholder="Enter company / utility name"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   required
@@ -188,13 +219,52 @@ export function SignupPage({ onNavigate, onSignupSuccess }) {
 
             <div className="form-group">
               <label className="form-label" style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                Industry *
+              </label>
+              <div style={{ position: "relative" }}>
+                <input
+                  type="text"
+                  className="input-field"
+                  placeholder="e.g. Electric Transmission & Distribution"
+                  value={industry}
+                  onChange={(e) => setIndustry(e.target.value)}
+                  required
+                  style={{ paddingLeft: "2.2rem" }}
+                />
+                <Globe size={15} style={{ position: "absolute", left: "0.75rem", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
+              </div>
+            </div>
+          </div>
+
+          {/* Origin / Location & Operating Region */}
+          <div className="form-grid-2">
+            <div className="form-group">
+              <label className="form-label" style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                Origin / Location *
+              </label>
+              <div style={{ position: "relative" }}>
+                <input
+                  type="text"
+                  className="input-field"
+                  placeholder="e.g. Headquarters city / state"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  required
+                  style={{ paddingLeft: "2.2rem" }}
+                />
+                <Compass size={15} style={{ position: "absolute", left: "0.75rem", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
                 Operating Region *
               </label>
               <div style={{ position: "relative" }}>
                 <input
                   type="text"
                   className="input-field"
-                  placeholder="e.g. Western Zone (Vadodara)"
+                  placeholder="e.g. Regional grid zone"
                   value={region}
                   onChange={(e) => setRegion(e.target.value)}
                   required
@@ -213,15 +283,33 @@ export function SignupPage({ onNavigate, onSignupSuccess }) {
               </label>
               <div style={{ position: "relative" }}>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   className="input-field"
-                  placeholder="••••••••••••"
+                  placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  style={{ paddingLeft: "2.2rem" }}
+                  style={{ paddingLeft: "2.2rem", paddingRight: "2.4rem" }}
                 />
                 <Lock size={15} style={{ position: "absolute", left: "0.75rem", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "0.65rem",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    background: "transparent",
+                    border: "none",
+                    color: "var(--text-muted)",
+                    cursor: "pointer",
+                    padding: 0
+                  }}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
               </div>
             </div>
 
@@ -231,15 +319,33 @@ export function SignupPage({ onNavigate, onSignupSuccess }) {
               </label>
               <div style={{ position: "relative" }}>
                 <input
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   className="input-field"
-                  placeholder="••••••••••••"
+                  placeholder="Confirm password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  style={{ paddingLeft: "2.2rem" }}
+                  style={{ paddingLeft: "2.2rem", paddingRight: "2.4rem" }}
                 />
                 <Lock size={15} style={{ position: "absolute", left: "0.75rem", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "0.65rem",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    background: "transparent",
+                    border: "none",
+                    color: "var(--text-muted)",
+                    cursor: "pointer",
+                    padding: 0
+                  }}
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                >
+                  {showConfirmPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
               </div>
             </div>
           </div>

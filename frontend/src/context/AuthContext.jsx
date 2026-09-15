@@ -105,7 +105,7 @@ export function AuthProvider({ children }) {
   };
 
   // Sign up with Email, Password, Profile, and Company
-  const signup = async ({ fullName, email, password, companyName, region }) => {
+  const signup = async ({ fullName, email, password, companyName, industry, location, region }) => {
     // 1. Supabase Auth Signup
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
@@ -114,6 +114,8 @@ export function AuthProvider({ children }) {
         data: {
           full_name: fullName.trim(),
           company_name: companyName.trim(),
+          industry: industry ? industry.trim() : "",
+          location: location ? location.trim() : "",
           region: region.trim(),
         },
       },
@@ -129,6 +131,9 @@ export function AuthProvider({ children }) {
     await api.syncProfile({
       user_id: createdUser.id,
       full_name: fullName.trim(),
+      company_name: companyName.trim(),
+      region: region.trim(),
+      industry: industry ? industry.trim() : "",
     }).catch(() => {});
 
     // 3. Create initial workspace in database

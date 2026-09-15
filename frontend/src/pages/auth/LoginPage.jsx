@@ -18,6 +18,12 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -32,7 +38,11 @@ export function LoginPage({ onNavigate, onLoginSuccess }) {
       console.error("Login failure:", err);
       // Clean, professional user-facing error message
       let msg = err.message || "Invalid email or password.";
-      if (msg.toLowerCase().includes("invalid login credentials")) {
+      if (
+        msg.toLowerCase().includes("invalid login credentials") ||
+        msg.toLowerCase().includes("invalid grant") ||
+        msg.toLowerCase().includes("invalid_credentials")
+      ) {
         msg = "Invalid email or password. Please verify your credentials.";
       }
       setError(msg);

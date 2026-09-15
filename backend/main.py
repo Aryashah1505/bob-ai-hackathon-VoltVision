@@ -125,6 +125,9 @@ class ProfileSyncRequest(BaseModel):
     user_id: str
     full_name: Optional[str] = None
     phone_number: Optional[str] = None
+    company_name: Optional[str] = None
+    region: Optional[str] = None
+    industry: Optional[str] = None
 
 class CreateWorkspaceRequest(BaseModel):
     name: str
