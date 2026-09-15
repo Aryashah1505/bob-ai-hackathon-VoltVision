@@ -6,6 +6,8 @@ These machines already produce useful information such as **temperature, vibrati
 
 The challenge is that this information is often available in different places and is not always used together early enough to prevent a failure.
 
+PRAVAHA addresses this challenge using an AI-ready architecture that can be extended with **IBM AI technologies such as watsonx.ai** for advanced risk analysis and prediction.
+
 ## The Problem
 
 A transformer may look normal today but show signs that it could fail in the future.
@@ -74,6 +76,8 @@ How serious is the risk?
 What should we do now?
 ```
 
+By combining asset data, environmental information, and risk analysis in one platform, PRAVAHA creates an architecture that can also support **IBM watsonx.ai for future advanced AI-powered prediction and decision support**.
+
 ## Why Existing Solutions Fall Short
 
 Many existing maintenance processes rely mainly on **scheduled or calendar-based maintenance**.
@@ -105,3 +109,5 @@ Crew Pre-positioning
     ↓
 Preventive Action
 ```
+
+Its AI-ready design also provides a clear path for integrating **IBM watsonx.ai** as the solution evolves toward more advanced predictive capabilities.
